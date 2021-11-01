@@ -4,7 +4,7 @@
       <span class="headline">登録</span>
     </v-card-title>
     <v-card-text>
-      <SignUpForm :onlogin="handleLogin" />
+      <SignUpForm :onsignup="handleSignup" />
     </v-card-text>
   </v-card>
 </template>
@@ -16,7 +16,7 @@ export default {
     SignUpForm,
   },
   methods: {
-    handleLogin: function(userInfo) {
+    handleSignup: function(userInfo) {
       return this.$store.dispatch("auth/signup", userInfo);
     }
   }

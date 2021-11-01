@@ -23,6 +23,10 @@ const authModule = {
         console.log(context);
         return response;
       })
+    },
+    signin(context, payload) {
+      console.log(payload);
+      console.log(context);
     }
   }
 }

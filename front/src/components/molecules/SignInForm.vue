@@ -4,20 +4,6 @@
       <form @submit.prevent="submit">
         <validation-provider
           v-slot="{ errors }"
-          name="ユーザ名"
-          rules="required|max:50"
-          ref="usernameProvider"
-        >
-          <v-text-field
-            v-model="name"
-            :counter="50"
-            :error-messages="errors"
-            label="ユーザ名"
-            required
-          ></v-text-field>
-        </validation-provider>
-        <validation-provider
-          v-slot="{ errors }"
           name="メールアドレス"
           rules="required|email|max:255"
           ref="emailProvider"
@@ -47,27 +33,13 @@
             ref="password"
           ></v-text-field>
         </validation-provider>
-        <validation-provider
-          v-slot="{ errors }"
-          name="パスワード（再入力）"
-          rules="required|confirmed:password"
-          ref="passwordConfirmationProvider"
-        >
-          <v-text-field
-            v-model="password_confirmation"
-            :error-messages="errors"
-            label="パスワード（再入力）"
-            required
-            type="password"
-          ></v-text-field>
-        </validation-provider>
-        <Button  @click="handleClick()" :disabled="invalid">作成</Button>
+        <Button  @click="handleClick()" :disabled="invalid">ログイン</Button>
       </form>
     </validation-observer>
   </v-form>
 </template>
 <script>
-import { required, email, max, min, confirmed } from "vee-validate/dist/rules";
+import { required, email, max, min } from "vee-validate/dist/rules";
 import {
   extend,
   ValidationObserver,
@@ -99,29 +71,23 @@ extend("email", {
   message: "メールアドレスを正しい形式で入力してください",
 });
 
-extend("confirmed", {
-  ...confirmed,
-  message: "パスワードが一致しません"
-})
 
 export default {
-  name: "SignUpForm",
+  name: "SignInForm",
   components: {
     ValidationProvider,
     ValidationObserver,
     Button
   },
   props: {
-    onsignup: {
+    onlogin: {
       type: Function
     }
   },
   data() {
     return {
       email: "",
-      name: "",
       password: "",
-      password_confirmation: ""
     };
   },
   methods: {
@@ -129,7 +95,7 @@ export default {
       this.$refs.observer.validate().then((result) => {
         if (result) {
           this.$nextTick(() => {
-            this.onsignup({ email: this.email, name: this.name, password: this.password, password_confirmation: this.password_confirmation })
+            this.onsignin({ email: this.email, password: this.password })
               .catch(err => {
                 console.log(err);
               })
