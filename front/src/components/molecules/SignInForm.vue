@@ -80,7 +80,7 @@ export default {
     Button
   },
   props: {
-    onlogin: {
+    onsignin: {
       type: Function
     }
   },

@@ -25,8 +25,19 @@ const authModule = {
       })
     },
     signin(context, payload) {
-      console.log(payload);
-      console.log(context);
+      return api({
+        method: "post",
+        url: "/login",
+        data: {
+          session: {
+            email: payload.email,
+            password: payload.password
+          }
+        }
+      }).then((response) => {
+        console.log(context);
+        return response;
+      })
     }
   }
 }
