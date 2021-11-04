@@ -2,7 +2,6 @@ class TokenProvider
     include Service
 
     def call(payload)
-        puts "このcallまで"
         issue_token(payload)
     end
 

@@ -34,6 +34,7 @@
           ></v-text-field>
         </validation-provider>
         <Button  @click="handleClick()" :disabled="invalid">ログイン</Button>
+        <Button  @click="handleClick2()" :disabled="invalid">renew確認</Button>
       </form>
     </validation-observer>
   </v-form>
@@ -82,6 +83,9 @@ export default {
   props: {
     onsignin: {
       type: Function
+    },
+    onrenew: {
+      type: Function
     }
   },
   data() {
@@ -96,6 +100,22 @@ export default {
         if (result) {
           this.$nextTick(() => {
             this.onsignin({ email: this.email, password: this.password })
+              .catch(err => {
+                console.log(err);
+              })
+              .then((response) => {
+                console.log(response);
+                console.log("ok");
+              })
+          });
+        }
+      });
+    },
+    handleClick2: function() {
+      this.$refs.observer.validate().then((result) => {
+        if (result) {
+          this.$nextTick(() => {
+            this.onrenew()
               .catch(err => {
                 console.log(err);
               })

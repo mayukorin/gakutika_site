@@ -30,6 +30,7 @@
             required
             id="email"
           ></v-text-field>
+          <span class="error" id="errorrr">{{ errors[0] }}</span>
         </validation-provider>
         <validation-provider
           v-slot="{ errors }"

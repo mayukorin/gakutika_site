@@ -4,8 +4,6 @@ class UsersController < ApplicationController
         if @user.save
             render json: @user, serializer: UserSerializer, status: :created
         else
-            puts "ok"
-            puts @user.errors
             render json: @user.errors, status: :bad_request
         end
     end

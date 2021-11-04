@@ -4,12 +4,8 @@ class UserAuthenticator
 
     def call(request_headers)
         @request_headers = request_headers
-        begin
-            payload, = TokenDecryptor.call(token)
-            User.find(payload['user_id'])
-        rescue StandardError
-            nil
-        end
+        payload, = TokenDecryptor.call(token)
+        user = User.find(payload['user_id'])
     end
 
     private

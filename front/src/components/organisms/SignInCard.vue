@@ -4,7 +4,7 @@
       <span class="headline">ログイン</span>
     </v-card-title>
     <v-card-text>
-      <SignInForm :onsignin="handleSignin" />
+      <SignInForm :onsignin="handleSignin" :onrenew="handleRenew" />
     </v-card-text>
   </v-card>
 </template>
@@ -18,6 +18,9 @@ export default {
   methods: {
     handleSignin: function(userInfo) {
       return this.$store.dispatch("auth/signin", userInfo);
+    },
+    handleRenew: function() {
+      return this.$store.dispatch("auth/renew");
     }
   }
 };

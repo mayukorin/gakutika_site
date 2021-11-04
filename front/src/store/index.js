@@ -20,14 +20,23 @@ const authModule = {
           }
         }
       }).then((response) => {
+        console.log(response);
+      })
+    },
+    renew(context) {
+      console.log("renew");
+      return api({
+        method: "get",
+        url: "/me/",
+      }).then(response => {
+        console.log(response);
         console.log(context);
-        return response;
       })
     },
     signin(context, payload) {
       return api({
         method: "post",
-        url: "/login",
+        url: "/signin",
         data: {
           session: {
             email: payload.email,
@@ -35,9 +44,13 @@ const authModule = {
           }
         }
       }).then((response) => {
-        console.log(context);
-        return response;
+        console.log(response.data.access);
+        localStorage.setItem("access", response.data.access);
+        return context.dispatch("renew");
       })
+    },
+    signout(context) {
+      console.log(context);
     }
   }
 }
