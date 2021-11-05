@@ -1,10 +1,10 @@
 <template>
-  <v-card>
+  <v-card flat> 
     <v-card-title>
       <span class="headline">ログイン</span>
     </v-card-title>
     <v-card-text>
-      <SignInForm :onsignin="handleSignin" :onrenew="handleRenew" />
+      <SignInForm :onsignin="handleSignin"/>
     </v-card-text>
   </v-card>
 </template>
@@ -19,9 +19,6 @@ export default {
     handleSignin: function(userInfo) {
       return this.$store.dispatch("auth/signin", userInfo);
     },
-    handleRenew: function() {
-      return this.$store.dispatch("auth/renew");
-    }
   }
 };
 </script>

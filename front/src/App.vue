@@ -33,7 +33,7 @@
       </v-btn>
     </v-app-bar>
 
-    <v-main>
+    <v-main class="grey lighten-4">
       <v-container>
         <v-row justify="center">
           <v-col cols="8">

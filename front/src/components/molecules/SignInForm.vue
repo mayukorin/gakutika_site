@@ -1,7 +1,6 @@
-<!--
 <template>
   <v-form>
-    <validation-observer ref="observer" v-slot="{ invalid }">
+    <validation-observer ref="observer">
       <form @submit.prevent="submit">
         <validation-provider
           v-slot="{ errors }"
@@ -16,6 +15,7 @@
             label="メールアドレス"
             required
             id="email"
+            prepend-icon="mdi-email"
           ></v-text-field>
         </validation-provider>
         <validation-provider
@@ -32,10 +32,10 @@
             required
             type="password"
             ref="password"
+            prepend-icon="mdi-lock"
           ></v-text-field>
         </validation-provider>
-        <Button  @click="handleClick()" :disabled="invalid">ログイン</Button>
-        <Button  @click="handleClick2()" :disabled="invalid">renew確認</Button>
+        <Button  @click="handleClick()">ログイン</Button>
       </form>
     </validation-observer>
   </v-form>
@@ -46,12 +46,12 @@ import {
   extend,
   ValidationObserver,
   ValidationProvider,
-  // setInteractionMode,
+  setInteractionMode,
 } from "vee-validate";
 
 import Button from "@/components/atoms/Button.vue";
 
-// setInteractionMode("eager");
+setInteractionMode("eager");
 
 extend("required", {
   ...required,
@@ -85,9 +85,6 @@ export default {
     onsignin: {
       type: Function
     },
-    onrenew: {
-      type: Function
-    }
   },
   data() {
     return {
@@ -112,74 +109,6 @@ export default {
         }
       });
     },
-    handleClick2: function() {
-      this.$refs.observer.validate().then((result) => {
-        if (result) {
-          this.$nextTick(() => {
-            this.onrenew()
-              .catch(err => {
-                console.log(err);
-              })
-              .then((response) => {
-                console.log(response);
-                console.log("ok");
-              })
-          });
-        }
-      });
-    }
   }
 };
 </script>
--->
-<template>
-  <ValidationObserver v-slot="{ invalid }">
-    <form @submit.prevent="onSubmit">
-      <ValidationProvider name="E-mail" rules="required|email" v-slot="{ errors }">
-        <input v-model="email" type="email">
-        <span>{{ errors[0] }}</span>
-      </ValidationProvider>
-
-      <ValidationProvider name="First Name" rules="required" v-slot="{ errors }">
-        <input v-model="firstName" type="text">
-        <span>{{ errors[0] }}</span>
-      </ValidationProvider>
-
-      <ValidationProvider name="Last Name" rules="required" v-slot="{ errors }">
-        <input v-model="lastName" type="text">
-        <span>{{ errors[0] }}</span>
-      </ValidationProvider>
-      <button type="submit" :disabled="invalid">Submit</button>
-    </form>
-  </ValidationObserver>
-</template>
-
-<script>
-import {
-  ValidationObserver,
-  ValidationProvider,
-  // setInteractionMode,
-} from "vee-validate";
-export default {
-  data: () => ({
-    email: '',
-    firstName: '',
-    lastName: ''
-  }),
-  components: {
-    ValidationProvider,
-    ValidationObserver,
-  },
-  methods: {
-    onSubmit () {
-      alert('Form has been submitted!');
-    }
-  }
-};
-</script>
-
-<style scoped>
-span {
-  display: block;
-}
-</style>
