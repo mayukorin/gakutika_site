@@ -1,9 +1,9 @@
 <template>
   <v-form>
-    <validation-observer ref="observer" v-slot="{ invalid }">
+    <validation-observer ref="observer">
       <form @submit.prevent="submit">
         <validation-provider
-          v-slot="{ errors }"
+          v-slot="{ errors, valid }"
           name="ユーザ名"
           rules="required|max:50"
           ref="usernameProvider"
@@ -14,10 +14,11 @@
             :error-messages="errors"
             label="ユーザ名"
             required
+            :name_valid="valid"
           ></v-text-field>
         </validation-provider>
         <validation-provider
-          v-slot="{ errors }"
+          v-slot="{ errors, valid }"
           name="メールアドレス"
           rules="required|email|max:255"
           ref="emailProvider"
@@ -29,11 +30,11 @@
             label="メールアドレス"
             required
             id="email"
+            :email_valid="valid"
           ></v-text-field>
-          <span class="error" id="errorrr">{{ errors[0] }}</span>
         </validation-provider>
         <validation-provider
-          v-slot="{ errors }"
+          v-slot="{ errors, valid }"
           name="パスワード"
           rules="required|min:6"
           vid="password"
@@ -46,10 +47,11 @@
             required
             type="password"
             ref="password"
+            :password_valid="valid"
           ></v-text-field>
         </validation-provider>
         <validation-provider
-          v-slot="{ errors }"
+          v-slot="{ errors, valid }"
           name="パスワード（再入力）"
           rules="required|confirmed:password"
           ref="passwordConfirmationProvider"
@@ -60,9 +62,10 @@
             label="パスワード（再入力）"
             required
             type="password"
+            :password_confirmation_valid="valid"
           ></v-text-field>
         </validation-provider>
-        <Button  @click="handleClick()" :disabled="invalid">作成</Button>
+        <Button  @click="handleClick()" :disabled="checkFormInvalid">作成</Button>
       </form>
     </validation-observer>
   </v-form>
@@ -73,12 +76,12 @@ import {
   extend,
   ValidationObserver,
   ValidationProvider,
-  setInteractionMode,
+  // setInteractionMode,
 } from "vee-validate";
 
 import Button from "@/components/atoms/Button.vue";
 
-setInteractionMode("eager");
+// setInteractionMode("eager");
 
 extend("required", {
   ...required,
@@ -122,7 +125,12 @@ export default {
       email: "",
       name: "",
       password: "",
-      password_confirmation: ""
+      password_confirmation: "",
+      email_valid: false,
+      name_valid: false,
+      password_valid: false,
+      password_confirmation_valid: false,
+      invalid: true,
     };
   },
   methods: {
@@ -141,6 +149,12 @@ export default {
           });
         }
       });
+    }
+  },
+  computed: {
+    checkFormInvalid: function() {
+      console.log("ok");
+      return this.email_valid && this.name_valid && this.password_valid && this.password_confirmation_valid;
     }
   }
 };

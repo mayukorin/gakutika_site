@@ -3,9 +3,13 @@ class UserAuthenticator
     include Service
 
     def call(request_headers)
-        @request_headers = request_headers
-        payload, = TokenDecryptor.call(token)
-        user = User.find(payload['user_id'])
+        begin do
+            @request_headers = request_headers
+            payload, = TokenDecryptor.call(token)
+            user = User.find(payload['user_id'])
+        rescue StandardError
+            nil
+        end
     end
 
     private

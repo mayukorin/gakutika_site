@@ -34,7 +34,13 @@
     </v-app-bar>
 
     <v-main>
-      <router-view />
+      <v-container>
+        <v-row justify="center">
+          <v-col cols="8">
+            <router-view />
+          </v-col>
+        </v-row>
+      </v-container>
     </v-main>
   </v-app>
 </template>

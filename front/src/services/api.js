@@ -1,4 +1,5 @@
 import axios from "axios";
+import store from "@/store";
 
 const api = axios.create({
   baseURL: process.env.VUE_APP_ROOT_API,
@@ -28,14 +29,13 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
   (response) => {
-      /*
     if (store.state.message.keep_info) {
       store.dispatch("message/setInfoMessage", {
         message: store.state.message.keep_info,
       });
       store.dispatch("message/clearKeepInfoMessage");
     }
-    */
+
     return response;
   },
   (error) => {
@@ -44,11 +44,10 @@ api.interceptors.response.use(
     let message;
     if (status === 400) {
       const messages = [].concat.apply([], Object.values(error.response.data));
-      print(messages);
-      // store.dispatch("message/setWarningMessages", { messages: messages });
+      store.dispatch("message/setWarningMessages", { messages: messages });
     } else if (status === 403) {
       message = "権限がありません．";
-      // store.dispatch("message/setErrorMessage", { message: message });
+      store.dispatch("message/setErrorMessage", { message: message });
     } else if (status === 401) {
       const token = localStorage.getItem("access");
       if (token != null) {
@@ -57,11 +56,11 @@ api.interceptors.response.use(
         message =
           "パスワード・メールアドレスに誤りがあるか，登録されていません．";
       }
-      // store.dispatch("auth/logout");
-      // store.dispatch("message/setErrorMessage", { message: message });
+      store.dispatch("auth/logout");
+      store.dispatch("message/setErrorMessage", { message: message });
     } else {
       message = "想定外のエラーです．";
-      // store.dispatch("message/setErrorMessage", { message: message });
+      store.dispatch("message/setErrorMessage", { message: message });
     }
     console.log(message);
     return Promise.reject(error);
