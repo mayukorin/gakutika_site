@@ -30,7 +30,7 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => {
     if (store.state.message.keep_info) {
-      store.dispatch("message/setInfoMessage", {
+      store.dispatch("message/setSuccessMessage", {
         message: store.state.message.keep_info,
       });
       store.dispatch("message/clearKeepInfoMessage");
@@ -43,23 +43,25 @@ api.interceptors.response.use(
     const status = error.response ? error.response.status : 500;
     let message;
     if (status === 400) {
-      const messages = [].concat.apply([], Object.values(error.response.data));
-      store.dispatch("message/setWarningMessages", { messages: messages });
+      message = [].concat.apply([], Object.values(error.response.data));
+      store.dispatch("message/setWarningMessages", { message: message });
     } else if (status === 403) {
-      message = "権限がありません．";
+      message = [].concat.apply([], ["権限がありません．"]);
       store.dispatch("message/setErrorMessage", { message: message });
     } else if (status === 401) {
       const token = localStorage.getItem("access");
+      let error_message;
       if (token != null) {
-        message = "ログインの有効期限切れです．";
+        error_message = "ログインの有効期限切れです．";
       } else {
-        message =
+        error_message =
           "パスワード・メールアドレスに誤りがあるか，登録されていません．";
       }
+      message = [].concat.apply([], [ error_message ]);
       store.dispatch("auth/logout");
       store.dispatch("message/setErrorMessage", { message: message });
     } else {
-      message = "想定外のエラーです．";
+      message = [].concat.apply([], ["想定外のエラーです．"]);
       store.dispatch("message/setErrorMessage", { message: message });
     }
     console.log(message);

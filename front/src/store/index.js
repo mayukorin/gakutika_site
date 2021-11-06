@@ -76,34 +76,43 @@ const authModule = {
 const messageModule = {
   namespaced: true,
   state: {
-    error: "",
-    warnings: [],
-    info: ""
+    messages: [],
+    color: "",
   },
   mutations: {
     set(state, payload) {
-      if (payload.error) state.error = payload.error;
-      if (payload.warnings) state.warnings = payload.warnings;
-      if (payload.info) state.info = payload.info;
+      if (payload.error) {
+        state.messages = payload.error;
+        state.color = "error";
+        console.log("mutation");
+        console.log(state.messages);
+      } else if (payload.warning) {
+        state.messages = payload.warning;
+        state.color = "warning";
+      } else if (payload.success) {
+        state.messages = payload.success;
+        state.color = "success";
+      }
     },
     clear(state) {
-      state.error = "";
-      state.warnings = [];
-      state.info = "";
+      state.messages = [];
+      state.color = "";
     }
   },
   actions: {
     setErrorMessage(context, payload) {
       context.commit("clear");
+      console.log("actions");
+      console.log(payload.message);
       context.commit("set", { error: payload.message });
     },
     setWarningMessages(context, payload) {
       context.commit("clear");
-      context.commit("set", { error: payload.messages });
+      context.commit("set", { warning: payload.message });
     },
-    setInfoMessage(context, payload) {
+    setSuccessMessage(context, payload) {
       context.commit("clear");
-      context.commit("set", { info: payload.info });
+      context.commit("set", { success: payload.message });
     },
     clearMessages(context) {
       context.commit("clear");
