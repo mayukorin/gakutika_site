@@ -1,7 +1,9 @@
 <template>
 <nav>
-    <v-snackbar v-model="snac" timeout="4000" top :color="message.color">
-       あああああ
+    <v-snackbar v-model="snac" top :color="flashMessage.color">
+       <div v-for="message in flashMessage.messages" :key="message">
+            {{ message }}
+        </div>  
     </v-snackbar>
     <v-app-bar flat app>
         <v-app-bar-nav-icon
@@ -19,7 +21,7 @@ export default {
   name: "Navbar",
   data() {
       return {
-          snac: false,
+          snac: true,
       } 
   },
   methods: {
@@ -31,13 +33,12 @@ export default {
       }
   },
   computed: {
-      message: function() {
-          if (this.$store.state.message.length > 0) {
-              console.log("ok");
-              this.setSnacTrue();
-          }
+      flashMessage: function() {
+          
+          if (this.$store.state.flashMessage.messages.length > 0) this.setSnacTrue();
           else this.setSnacFalse();
-          return this.$store.state.message;
+
+          return this.$store.state.flashMessage;
       }
   },
 };

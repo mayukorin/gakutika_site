@@ -5,7 +5,7 @@
     "scripts": {
         "postinstall": "cd front; rm -rf package-lock.json; npm install",
         "build": "cd front; cd node_modules; ls; cd ../;npm run build",
-        "start": "cd front; npm run serve",
+        "start": "cd front; node server.js",
         "serve": "cd front; npm run serve"
     }
 }

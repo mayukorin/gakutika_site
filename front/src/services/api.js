@@ -12,9 +12,7 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    // store.dispatch("message/clearMessages");
-    console.log(process.env.VUE_APP_ROOT_API);
-    console.log("okkkkkkkkkkkkkkkkkkkk")
+    // store.dispatch("flashMessage/clearMessages");
     const token = localStorage.getItem("access");
     if (token) {
       config.headers.Authorization = "JWT " + token;
@@ -29,42 +27,43 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
   (response) => {
+    /*
     if (store.state.message.keep_info) {
-      store.dispatch("message/setSuccessMessage", {
+      store.dispatch("flashMessage/setSuccessMessage", {
         message: store.state.message.keep_info,
       });
-      store.dispatch("message/clearKeepInfoMessage");
+      store.dispatch("flashMessage/clearKeepInfoMessage");
     }
-
+    */
     return response;
   },
   (error) => {
     console.log("error.resposnse=", error.response);
     const status = error.response ? error.response.status : 500;
-    let message;
+    let messages;
     if (status === 400) {
-      message = [].concat.apply([], Object.values(error.response.data));
-      store.dispatch("message/setWarningMessages", { message: message });
+      messages = [].concat.apply([], Object.values(error.response.data));
+      store.dispatch("flashMessage/setWarningMessages", { messages: messages });
     } else if (status === 403) {
-      message = [].concat.apply([], ["権限がありません．"]);
-      store.dispatch("message/setErrorMessage", { message: message });
+      messages = [].concat.apply([], ["権限がありません．"]);
+      store.dispatch("flashMessage/setErrorMessage", { messages: messages });
     } else if (status === 401) {
       const token = localStorage.getItem("access");
-      let error_message;
+      let error_messages;
       if (token != null) {
-        error_message = "ログインの有効期限切れです．";
+        error_messages = "ログインの有効期限切れです．";
       } else {
-        error_message =
+        error_messages =
           "パスワード・メールアドレスに誤りがあるか，登録されていません．";
       }
-      message = [].concat.apply([], [ error_message ]);
+      messages = [].concat.apply([], [ error_messages ]);
       store.dispatch("auth/logout");
-      store.dispatch("message/setErrorMessage", { message: message });
+      store.dispatch("flashMessage/setErrorMessage", { messages: messages });
     } else {
-      message = [].concat.apply([], ["想定外のエラーです．"]);
-      store.dispatch("message/setErrorMessage", { message: message });
+      messages = [].concat.apply([], ["想定外のエラーです．"]);
+      store.dispatch("flashMessage/setErrorMessage", { messages: messages });
     }
-    console.log(message);
+    console.log(messages);
     return Promise.reject(error);
   }
 );

@@ -42,6 +42,43 @@ RSpec.describe "Api::Sessions", type: :request do
       end
 
     end
+
+    describe "#me" do
+      let!(:user) do
+        FactoryBot.create(:user)
+      end
+      let!(:token) do
+        exp = Time.now.to_i + 4 * 60
+        TokenProvider.new.call(user_id: user.id, exp: exp)
+      end
+      context "TokenProviderで生成したtokenがヘッダーに含まれている場合" do
+        it "status ok と user を返す" do
+          get api_me_path, headers: { "Authorization" => "JWT " + token }
+          expect(response).to have_http_status(:ok)
+          expected_response = {'name' => user.name, 'email' => user.email}
+          expect(JSON.parse(response.body)).to match(expected_response)
+        end
+      end
+
+      context "TokenProviderで生成したtokenと異なるものがヘッダーに含まれている場合" do
+        it "status unauthorized  と 「ログインをやり直してください」メッセージ を返す" do
+          get api_me_path, headers: { "Authorization" => "JWT " + token + "aa"}
+          expect(response).to have_http_status(:unauthorized)
+          expected_response = { 'message' => ['ログインをやり直してください'] }
+          expect(JSON.parse(response.body)).to match(expected_response)
+        end
+      end
+
+      context "tokenがヘッダーに含まれていない場合" do
+        it "status unauthorized  と 「ログインをやり直してください」メッセージ を返す" do
+          get api_me_path
+          expect(response).to have_http_status(:unauthorized)
+          expected_response = { 'message' => ['ログインをやり直してください'] }
+          expect(JSON.parse(response.body)).to match(expected_response)
+        end
+      end
+
+    end
   end
 end
 

@@ -17,7 +17,14 @@ export default {
   },
   methods: {
     handleSignup: function(userInfo) {
-      return this.$store.dispatch("auth/signup", userInfo);
+      return this.$store.dispatch("auth/signup", userInfo).then(() => {
+        let signUpSuccessMessage = 'アカウント登録が完了しました';
+        this.$store.dispatch("flashMessage/setSuccessMessage", { messages: [ signUpSuccessMessage ]});
+        const next = this.$router.query.next || "/";
+        this.$router.replace(next);
+      }).catch((error) => {
+        console.log(error);
+      });
     }
   }
 };

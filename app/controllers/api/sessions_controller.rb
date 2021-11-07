@@ -1,6 +1,7 @@
 class Api::SessionsController < ApplicationController
     include Service
     include SigninUser
+    include ExceptionHandler 
     def create
         user = User.find_by(email: session_params[:email])
         if user&.authenticate(session_params[:password])
@@ -13,7 +14,7 @@ class Api::SessionsController < ApplicationController
      end
 
     def me
-        render json: signin_user, serializer: UserSerializer, status: :ok
+        render json: signin_user(request.headers), serializer: UserSerializer, status: :ok
     end
   
     private

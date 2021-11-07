@@ -25,8 +25,7 @@ RSpec.describe "TokenDecryptor", type: :model do
                 TokenProvider.new.call(user_id: user.id, exp: exp) + "aaaa"
             end
             
-            it "戻り値に含まれるuser_idがTokenProviderで生成した時に指定したuser.idと等しい" do
-                puts token
+            it "StandardErrorが発生" do
                 expect do
                     TokenDecryptor.new.call(token)
                 end.to raise_error(StandardError)

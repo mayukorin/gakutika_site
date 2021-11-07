@@ -71,48 +71,11 @@
   </v-form>
 </template>
 <script>
-import { required, email, max, min, confirmed } from "vee-validate/dist/rules";
-import {
-  extend,
-  ValidationObserver,
-  ValidationProvider,
-  setInteractionMode,
-} from "vee-validate";
-
 import Button from "@/components/atoms/Button.vue";
-
-setInteractionMode('eager');
-
-extend("required", {
-  ...required,
-  message: "{_field_} を入力してください",
-});
-
-extend("max", {
-  ...max,
-  message: "{_field_} は {length} 文字以下で入力してください",
-});
-
-extend("min", {
-  ...min,
-  message: "{_field_} は {length} 文字以上で入力してください",
-});
-
-extend("email", {
-  ...email,
-  message: "メールアドレスを正しい形式で入力してください",
-});
-
-extend("confirmed", {
-  ...confirmed,
-  message: "パスワードが一致しません"
-})
 
 export default {
   name: "SignUpForm",
   components: {
-    ValidationProvider,
-    ValidationObserver,
     Button
   },
   props: {
@@ -133,14 +96,7 @@ export default {
       this.$refs.observer.validate().then((result) => {
         if (result) {
           this.$nextTick(() => {
-            this.onsignup({ email: this.email, name: this.name, password: this.password, password_confirmation: this.password_confirmation })
-              .catch(err => {
-                console.log(err);
-              })
-              .then((response) => {
-                console.log(response);
-                console.log("ok");
-              })
+            this.onsignup({ email: this.email, name: this.name, password: this.password, password_confirmation: this.password_confirmation });
           });
         }
       });

@@ -1,9 +1,10 @@
 module SigninUser
-    def signin_user
-        @signin_user ||= UserAuthenticator.call(request.headers)
-        unless @signin_user
-            render json: { message: [ 'ログインの有効切れです'] }, status: :unauthorized 
-        end
+    
+    extend ActiveSupport::Concern
+
+    def signin_user(request_headers)
+        @signin_user ||= UserAuthenticator.call(request_headers)
+        raise Application::AuthenticationError unless @signin_user
         return @signin_user
     end
 end

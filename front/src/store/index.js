@@ -7,13 +7,13 @@ Vue.use(Vuex);
 const authModule = {
   namespaced: true,
   state: {
-    username: "",
+    name: "",
     email: "",
     isLoggedIn: false
   },
   mutations: {
     set(state, payload) {
-      state.username = payload.user.username;
+      state.name = payload.user.name;
       state.email = payload.user.email;
       state.isLoggedIn = true;
     },
@@ -36,19 +36,17 @@ const authModule = {
             password_confirmation: payload.password_confirmation
           }
         }
-      }).then((response) => {
-        console.log(response);
+      }).then(() => {
+        return context.dispatch("signin", { email: payload.email, password: payload.password });
       })
     },
     renew(context) {
-      console.log("renew");
       return api({
         method: "get",
         url: "/me/",
-      }).then(response => {
-        console.log(response);
-        console.log(context);
+      }).then((response) => {
         context.commit("set", { user: response.data });
+        return response;
       })
     },
     signin(context, payload) {
@@ -62,7 +60,6 @@ const authModule = {
           }
         }
       }).then((response) => {
-        console.log(response.data.access);
         localStorage.setItem("access", response.data.access);
         return context.dispatch("renew");
       })
@@ -73,7 +70,7 @@ const authModule = {
   }
 };
 
-const messageModule = {
+const flashMessageModule = {
   namespaced: true,
   state: {
     messages: [],
@@ -84,8 +81,6 @@ const messageModule = {
       if (payload.error) {
         state.messages = payload.error;
         state.color = "error";
-        console.log("mutation");
-        console.log(state.messages);
       } else if (payload.warning) {
         state.messages = payload.warning;
         state.color = "warning";
@@ -104,15 +99,15 @@ const messageModule = {
       context.commit("clear");
       console.log("actions");
       console.log(payload.message);
-      context.commit("set", { error: payload.message });
+      context.commit("set", { error: payload.messages });
     },
     setWarningMessages(context, payload) {
       context.commit("clear");
-      context.commit("set", { warning: payload.message });
+      context.commit("set", { warning: payload.messages });
     },
     setSuccessMessage(context, payload) {
       context.commit("clear");
-      context.commit("set", { success: payload.message });
+      context.commit("set", { success: payload.messages });
     },
     clearMessages(context) {
       context.commit("clear");
@@ -123,7 +118,7 @@ const messageModule = {
 const store = new Vuex.Store({
   modules: {
     auth: authModule,
-    message: messageModule
+    flashMessage: flashMessageModule
   },
 });
 
